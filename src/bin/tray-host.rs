@@ -83,16 +83,18 @@ async fn run_daemon() -> Result<(), Box<dyn std::error::Error>> {
         let mut rx = host_bg.subscribe();
         while let Ok(event) = rx.recv().await {
             match event {
-                system_tray::client::Event::Add(addr, _sni) => {
+                system_tray::client::Event::Add(addr, _) => {
                     log::debug!("Icon cache: add {addr}");
-                    let _ = host_bg.list_items_with_icons();
+                    host_bg.refresh_icon(&addr);
                 }
-                system_tray::client::Event::Update(addr, _update) => {
-                    log::debug!("Icon cache: update {addr}");
-                    let _ = host_bg.list_items_with_icons();
+                system_tray::client::Event::Update(addr, update) => {
+                    // Only re-cache when the icon actually changes
+                    if matches!(update, system_tray::client::UpdateEvent::Icon { .. }) {
+                        log::debug!("Icon cache: icon changed for {addr}");
+                        host_bg.refresh_icon(&addr);
+                    }
                 }
                 system_tray::client::Event::Remove(_addr) => {
-                    // Cache cleanup is lazy — stale files are just overwritten
                     log::debug!("Icon cache: remove {_addr}");
                 }
             }

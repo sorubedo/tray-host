@@ -159,6 +159,16 @@ impl Host {
         items
     }
 
+    /// Refresh the cached icon for a single tray item.
+    ///
+    /// Called on `Event::Add` or `Event::Update(UpdateEvent::Icon)`.
+    pub fn refresh_icon(&self, address: &str) {
+        let map = self.items.lock().expect("items lock poisoned");
+        if let Some((sni, _)) = map.get(address) {
+            let _ = resolve_icon(sni, address);
+        }
+    }
+
     /// Returns the flattened menu for a tray item, identified by its D-Bus address.
     ///
     /// Recursively flattens the nested menu tree. Returns `None` if the item
