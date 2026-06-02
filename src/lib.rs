@@ -379,12 +379,13 @@ fn get_title(item: &StatusNotifierItem, address: &str) -> String {
         .or_else(|| item.tool_tip.as_ref().map(|t| t.title.clone()))
         .unwrap_or_default();
 
-    if !title.is_empty() {
+    // Skip values that are identical to icon_name — Electron apps often set
+    // title/id/icon_name all to the same technical identifier like
+    // "chrome_status_icon_1", which is not a user-facing name.
+    if !title.is_empty() && item.icon_name.as_deref() != Some(&title) {
         return title;
     }
 
-    // Use id only if it differs from icon_name (Electron apps often set both
-    // to the same technical identifier like "chrome_status_icon_1").
     if !item.id.is_empty() && item.icon_name.as_deref() != Some(&item.id) {
         return item.id.clone();
     }
