@@ -1,90 +1,128 @@
-# tray-tui
+# tray-host
 
-[![nixpkgs unstable package](https://repology.org/badge/version-for-repo/nix_unstable/tray-tui.svg)](https://search.nixos.org/packages?channel=unstable&query=tray-tui)
-[![AUR package](https://repology.org/badge/version-for-repo/aur/tray-tui.svg)](https://aur.archlinux.org/packages/tray-tui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-A **system tray implementation** for **terminal user interfaces (TUI)** using [ratatui](https://github.com/ratatui) and [system-tray](https://github.com/jakestanger/system-tray).
+> ⚡ **Vibe-coded** with [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) in ~10 minutes.
 
-## **Overview**
+A **headless system tray host** (StatusNotifierItem daemon) designed to work with external launchers like **fuzzel**, **rofi**, or **dmenu** — inspired by the [cliphist](https://github.com/sentriz/cliphist) + fuzzel architecture.
 
-tray-tui brings system tray functionality to the terminal, displaying **tray menus as interactive trees**. This allows for seamless navigation of **tray menu items and quick actions**, all within a TUI environment.
+## Credits
 
-## **Features**
+| Project | Role |
+|---------|------|
+| [tray-tui](https://github.com/Levizor/tray-tui) | Original TUI system tray — stripped down to become this project |
+| [system-tray](https://github.com/jakestanger/system-tray) | D-Bus StatusNotifierItem backend that does all the heavy lifting |
+| [cliphist](https://github.com/sentriz/cliphist) | Architectural inspiration: daemon + socket + picker |
 
-✅ **System tray integration** in a terminal
-✅ **Interactive tree-based menu navigation**
-✅ **Built using Rust and ratatui**
+This project is a complete rewrite of `tray-tui` — all TUI/frontend code removed, replaced with a Unix socket daemon + CLI designed for composability with fuzzy pickers.
 
-## **Installation**
-
-### Arch linux
-
-Available in AUR
+## Architecture
 
 ```
-yay -S tray-tui
+D-Bus Session Bus
+    │  Apps (Discord, Dropbox, copyq...) register tray icons
+    ▼
+tray-host daemon (background process)
+    ├── system_tray::Client → D-Bus StatusNotifierWatcher
+    ├── Host → in-memory tray item cache
+    └── Unix socket → $XDG_RUNTIME_DIR/tray-host.sock
+         ▲
+         │
+    tray-host pick    ← the only command you need
 ```
 
+## Installation
+
+### Cargo
+
 ```
-paru tray-tui
+cargo install --git https://github.com/sorubedo/tray-tui
 ```
 
-### NixOS or Nix package manager
-Available in nixpkgs:
-```nix
-environment.systemPackages = with pkgs; [
-  tray-tui
-];
+### From source
+
 ```
-As a flake:
+git clone https://github.com/sorubedo/tray-tui
+cd tray-tui
+cargo build --release
+```
+
+### Nix
+
 ```nix
 inputs = {
-  tray-tui.url = "github:Levizor/tray-tui";
+  tray-host.url = "github:sorubedo/tray-tui";
 };
 ```
-```nix
-environment.systemPackages = with pkgs; [
-  inputs.tray-tui.packages.${system}.tray-tui
-];
-```
 
-### Other
+## Usage
 
-With cargo:
+### 1. Start the daemon
+
+Add to your compositor autostart, or run manually:
 
 ```
-cargo install tray-tui
+tray-host daemon &
 ```
 
-In case of failure, try to run
+### 2. Interact with tray icons
 
 ```
-cargo install --locked tray-tui
+tray-host pick
 ```
 
-## **Usage**
+That's it. `pick` handles the full flow:
 
-Run `tray-tui` in the terminal or optionally pass a path to config file `tray-tui -c $CONFIG`.
+1. Lists tray icons → spawns **fuzzel** for selection
+2. If the icon has a menu → spawns **fuzzel** again for menu selection
+3. Sends the click via D-Bus to the application
+4. If no menu → sends a default (left-click) activation
 
-Use `hjkl` or `arrow keys` to navigate between menus.
+Use a different picker:
 
-Use `Shift-(J/K|Up/Down)` move focus between items inside menu.
+```
+tray-host pick --picker "rofi -dmenu"
+```
 
-`Enter` to activate.
+### Advanced: manual piping
 
-`q/Ctrl-c` to exit.
+```
+tray-host list | fuzzel -d '\t' --with-nth=2
+tray-host menu ":1.58" | fuzzel -d '\t' --with-nth=2
+tray-host activate ":1.58" 42
+```
 
-You can configure the bindings.
+## Configuration
 
-## **Configuration**
+Optional config at `$XDG_CONFIG_HOME/tray-host/config.toml`:
 
-Configuration file is located at `$XDG_CONFIG_HOME/tray-tui/config.toml`.
-See all the configuration options in [example config](./config_example.toml).
+```toml
+sorting = false   # sort tray items alphabetically
+```
 
-## Showcase
+## Library usage
 
-![](images/1.png)
+```rust
+use tray_host::Host;
 
-## **License**
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let host = Host::new().await?;
+    for (addr, title) in host.list_items() {
+        println!("{addr}\t{title}");
+    }
+    Ok(())
+}
+```
 
-Project is licensed under [MIT](./LICENSE) license.
+## How it was built
+
+This is a **vibe-coding** project. The entire transformation — removing the TUI layer, adding Unix socket IPC, designing the CLI, and integrating with fuzzel — was done by [Claude Code](https://claude.ai/code) (powered by DeepSeek V4 Pro) in a single session. The AI analyzed the original `tray-tui` codebase, proposed an architecture inspired by `cliphist`, and implemented everything from the plan to zero-warning compilation.
+
+- **Original project**: [Levizor/tray-tui](https://github.com/Levizor/tray-tui) — TUI system tray
+- **Backend crate**: [jakestanger/system-tray](https://github.com/jakestanger/system-tray) — D-Bus StatusNotifierItem client
+- **This fork**: [sorubedo/tray-tui](https://github.com/sorubedo/tray-tui) — headless daemon + CLI
+
+## License
+
+MIT — see [LICENSE](./LICENSE).

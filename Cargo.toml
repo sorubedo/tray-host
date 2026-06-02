@@ -1,10 +1,10 @@
 [package]
-name = "tray-tui"
-description = "System tray in your terminal"
+name = "tray-host"
+description = "Headless StatusNotifierItem host — system tray daemon for use with external launchers like fuzzel/rofi/dmenu"
 repository = "https://github.com/Levizor/tray-tui"
 homepage = "https://github.com/Levizor/tray-tui"
 
-version = "0.3.4"
+version = "0.4.0"
 authors = [
   "Levizor <levizor@disroot.org>",
   "EliasDevis <elias.devis@protonmail.com>",
@@ -12,19 +12,22 @@ authors = [
 license = "MIT"
 edition = "2021"
 
+[lib]
+name = "tray_host"
+path = "src/lib.rs"
+
+[[bin]]
+name = "tray-host"
+path = "src/bin/tray-host.rs"
+
 [dependencies]
 clap = { version = "4.5.47", features = ["derive"] }
 clap_complete = "4.5.57"
 config = "0.15.15"
-crokey = "1.3.0"
-crossterm = { version = "0.29", features = ["event-stream"] }
 dirs = "6.0.0"
-futures = "0.3.31"
-indexmap = "2.11.0"
 log = "0.4.28"
-ratatui = { version = "0.29.0", features = ["unstable-widget-ref", "serde"] }
+png = "0.18.1"
 serde = { version = "1.0.219", features = ["serde_derive", "derive"] }
 simplelog = "0.12.2"
 system-tray = { version = "0.8.4" }
 tokio = { version = "1.47.1", features = ["full"] }
-tui-tree-widget = "0.23.1"

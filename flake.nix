@@ -1,5 +1,5 @@
 {
-  description = "tray-tui: system tray in your terminal";
+  description = "tray-host: headless system tray daemon for use with fuzzel/rofi/dmenu";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -21,7 +21,7 @@
       in
       rec {
 
-        packages.tray-tui =
+        packages.tray-host =
           with pkgs;
           rustPlatform.buildRustPackage rec {
             pname = manifest.name;
@@ -37,25 +37,25 @@
             ];
 
             postInstall = ''
-              installShellCompletion --cmd tray-tui \
-                --bash <($out/bin/tray-tui --completions bash) \
-                --zsh <($out/bin/tray-tui --completions zsh) \
-                --fish <($out/bin/tray-tui --completions fish)
+              installShellCompletion --cmd tray-host \
+                --bash <($out/bin/tray-host --completions bash) \
+                --zsh <($out/bin/tray-host --completions zsh) \
+                --fish <($out/bin/tray-host --completions fish)
             '';
 
             passthru.updateScript = nix-update-script { };
 
             meta = {
-              description = "System tray in your terminal";
+              description = "Headless StatusNotifierItem host for use with external launchers like fuzzel/rofi/dmenu";
               homepage = "https://github.com/Levizor/tray-tui";
               license = lib.licenses.mit;
-              mainProgram = "tray-tui";
+              mainProgram = "tray-host";
               maintainers = with lib.maintainers; [ Levizor ];
               platforms = lib.platforms.linux;
             };
           };
 
-        defaultPackage = packages.tray-tui;
+        defaultPackage = packages.tray-host;
 
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
