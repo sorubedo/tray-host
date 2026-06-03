@@ -288,12 +288,6 @@ fn icon_cache_dir() -> PathBuf {
         .join("icons")
 }
 
-/// Clean the entire icon cache directory (called on daemon startup).
-pub fn clean_icon_cache() {
-    let dir = icon_cache_dir();
-    let _ = std::fs::remove_dir_all(&dir);
-}
-
 /// Convert a single ARGB32 (big-endian) IconPixmap to PNG bytes.
 ///
 /// The input pixels are in network byte order: A, R, G, B per pixel.

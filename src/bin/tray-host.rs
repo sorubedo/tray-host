@@ -19,7 +19,7 @@ use tokio::process::Command as TokioCommand;
 use tray_host::cli::{Cli, Command};
 use tray_host::config::Config;
 use tray_host::socket::{self, default_socket_path};
-use tray_host::{clean_icon_cache, Host};
+use tray_host::Host;
 
 static APP_NAME: &str = "tray-host";
 
@@ -65,8 +65,7 @@ async fn run_daemon() -> Result<(), Box<dyn std::error::Error>> {
     let host = Host::with_sorting(config.sorting).await?;
     log::info!("Host initialized, D-Bus watcher running");
 
-    // Clean stale cache from previous session, then cache current icons
-    clean_icon_cache();
+    // Cache initial icons
     let _ = host.list_items_with_icons();
     log::info!("Initial icons cached");
 
