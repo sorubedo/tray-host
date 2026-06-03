@@ -398,6 +398,8 @@ fn get_title(item: &StatusNotifierItem, address: &str) -> String {
                 && !v.chars().any(|c| c.is_uppercase()))
     };
 
+    let title = title.replace(['\n', '\r', '\t'], " ").trim().to_string();
+
     if !title.is_empty() && !matches_icon(&title) {
         return title;
     }
