@@ -2,8 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-> ⚡ **Vibe-coded** with [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) in ~10 minutes.
-
 A **headless system tray host** (StatusNotifierItem daemon) designed to work with external launchers like **fuzzel**, **rofi**, or **dmenu** — inspired by the [cliphist](https://github.com/sentriz/cliphist) + fuzzel architecture.
 
 ## Credits
@@ -45,14 +43,6 @@ cargo install --git https://github.com/sorubedo/tray-tui
 git clone https://github.com/sorubedo/tray-tui
 cd tray-tui
 cargo build --release
-```
-
-### Nix
-
-```nix
-inputs = {
-  tray-host.url = "github:sorubedo/tray-tui";
-};
 ```
 
 ## Usage
@@ -107,7 +97,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-> ⚡ 本项目由 [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) vibe-coding 生成。
+> ⚡ Vibe-coded with [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro).
 
 ## License
 

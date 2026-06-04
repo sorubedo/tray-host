@@ -2,8 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
-> ⚡ 使用 [Claude Code](https://claude.ai/code)（DeepSeek V4 Pro）**vibe-coding**，耗时约 10 分钟。
-
 一个**无头系统托盘托管程序**（StatusNotifierItem 守护进程），专为配合 **fuzzel**、**rofi**、**dmenu** 等外部启动器使用而设计。架构灵感来源于 [cliphist](https://github.com/sentriz/cliphist) + fuzzel 的组合模式。
 
 ## 致谢
@@ -47,14 +45,6 @@ cd tray-tui
 cargo build --release
 ```
 
-### Nix
-
-```nix
-inputs = {
-  tray-host.url = "github:sorubedo/tray-tui";
-};
-```
-
 ## 使用方法
 
 ### 1. 启动守护进程
@@ -81,15 +71,7 @@ tray-host pick
 使用其他选择器：
 
 ```
-tray-host pick --picker "rofi -dmenu"
-```
-
-### 高级：手动管道
-
-```
-tray-host list | fuzzel -d '\t' --with-nth=2
-tray-host menu ":1.58" | fuzzel -d '\t' --with-nth=2
-tray-host activate ":1.58" 42
+tray-host pick --picker "rofi -dmenu -show-icons"
 ```
 
 ## 配置
@@ -115,13 +97,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-## 开发过程
-
-这是一个 **vibe-coding** 项目。整个转换过程——移除 TUI 层、添加 Unix socket IPC、设计 CLI、集成 fuzzel——由 [Claude Code](https://claude.ai/code)（基于 DeepSeek V4 Pro）在一次对话中完成。AI 分析了原始 `tray-tui` 代码库，提出了受 `cliphist` 启发的架构方案，并从方案设计到零警告编译全部实现。
-
-- **原始项目**：[Levizor/tray-tui](https://github.com/Levizor/tray-tui) — TUI 系统托盘
-- **后端 crate**：[jakestanger/system-tray](https://github.com/jakestanger/system-tray) — D-Bus StatusNotifierItem 客户端
-- **本 fork**：[sorubedo/tray-tui](https://github.com/sorubedo/tray-tui) — 无头守护进程 + CLI
+> ⚡ 本项目由 [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) vibe-coding 生成。
 
 ## 许可证
 
