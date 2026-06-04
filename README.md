@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
+**⚠️ Vibe-coded with [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro).**
+
 A **headless system tray host** (StatusNotifierItem daemon) designed to work with external launchers like **fuzzel**, **rofi**, or **dmenu** — inspired by the [cliphist](https://github.com/sentriz/cliphist) + fuzzel architecture.
 
 ## Credits
@@ -96,8 +98,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
-
-> ⚡ Vibe-coded with [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro).
 
 ## License
 

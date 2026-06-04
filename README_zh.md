@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
+**⚠️ 本项目由 [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) vibe-coding 生成。**
+
 一个**无头系统托盘托管程序**（StatusNotifierItem 守护进程），专为配合 **fuzzel**、**rofi**、**dmenu** 等外部启动器使用而设计。架构灵感来源于 [cliphist](https://github.com/sentriz/cliphist) + fuzzel 的组合模式。
 
 ## 致谢
@@ -96,8 +98,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
-
-> ⚡ 本项目由 [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) vibe-coding 生成。
 
 ## 许可证
 
