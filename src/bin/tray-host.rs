@@ -168,11 +168,17 @@ async fn run_pick(picker: &str) -> Result<(), Box<dyn std::error::Error>> {
         log::debug!("No menu, sending default activation");
         send_or_fail(&format!("ACTIVATE_DEFAULT {address}")).await?;
     } else {
-        // Format menu items for fuzzel (plain text: id\tlabel\ttype\tenabled)
+        // Format: id\tlabel (drop type and enabled — not useful for selection)
         let menu_input = menu
             .lines()
             .filter(|l| !l.is_empty() && *l != "OK")
-            .collect::<Vec<&str>>()
+            .map(|l| {
+                let parts: Vec<&str> = l.splitn(3, '\t').collect();
+                let id = parts.first().unwrap_or(&"0");
+                let label = parts.get(1).unwrap_or(&"");
+                format!("{id}\t{label}")
+            })
+            .collect::<Vec<String>>()
             .join("\n");
 
         let menu_selected = pipe_text_to_picker(picker_prog, &picker_args, &menu_input).await?;

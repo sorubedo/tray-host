@@ -81,15 +81,7 @@ That's it. `pick` handles the full flow:
 Use a different picker:
 
 ```
-tray-host pick --picker "rofi -dmenu"
-```
-
-### Advanced: manual piping
-
-```
-tray-host list | fuzzel -d '\t' --with-nth=2
-tray-host menu ":1.58" | fuzzel -d '\t' --with-nth=2
-tray-host activate ":1.58" 42
+tray-host pick --picker "rofi -dmenu -show-icons"
 ```
 
 ## Configuration
@@ -115,13 +107,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-## How it was built
-
-This is a **vibe-coding** project. The entire transformation — removing the TUI layer, adding Unix socket IPC, designing the CLI, and integrating with fuzzel — was done by [Claude Code](https://claude.ai/code) (powered by DeepSeek V4 Pro) in a single session. The AI analyzed the original `tray-tui` codebase, proposed an architecture inspired by `cliphist`, and implemented everything from the plan to zero-warning compilation.
-
-- **Original project**: [Levizor/tray-tui](https://github.com/Levizor/tray-tui) — TUI system tray
-- **Backend crate**: [jakestanger/system-tray](https://github.com/jakestanger/system-tray) — D-Bus StatusNotifierItem client
-- **This fork**: [sorubedo/tray-tui](https://github.com/sorubedo/tray-tui) — headless daemon + CLI
+> ⚡ 本项目由 [Claude Code](https://claude.ai/code) (DeepSeek V4 Pro) vibe-coding 生成。
 
 ## License
 
